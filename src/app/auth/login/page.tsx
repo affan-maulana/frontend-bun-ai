@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Head from 'next/head';
+import axios from 'axios';
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +14,22 @@ const LoginPage = () => {
     // Handle login logic here
     console.log('Email:', email);
     console.log('Password:', password);
+
+    // Check for email format
+    if (!email.includes('@') && !email.includes('.')) {
+      alert('Email must be in the correct format');
+    }
+
+    // axios post request to login
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    axios.post(`${url}/auth/login`, {
+      email,
+      password,
+    }).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.error(err);
+    });
   };
 
   return (

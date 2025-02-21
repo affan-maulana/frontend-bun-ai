@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Head from 'next/head';
-
+import axios from 'axios';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -10,13 +10,36 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Handle register Logic
   const handleRegister = (e:any) => {
     e.preventDefault();
-    // Handle register logic here
     console.log('Name:', name);
     console.log('Email:', email);
     console.log('Password:', password);
     console.log('Confirm Password:', confirmPassword);
+
+    // checker for password and confirm password
+    if (password !== confirmPassword) {
+      alert('Password and Confirm Password must be the same');
+    }
+
+    // check for email format
+    if (!email.includes('@') && !email.includes('.')) {
+      alert('Email must be in the correct format');
+    }
+
+    // axios post request to register
+    const url = process.env.NEXT_PUBLIC_API_URL;
+    axios.post(`${url}/auth/register`, {
+      name,
+      email,
+      password,
+    }).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.error(err);
+    });
+
   };
 
   return (
@@ -33,7 +56,7 @@ export default function Register() {
             <input
               type="text"
               id="name"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none text-gray-800 focus:ring focus:border-blue-300"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -44,7 +67,7 @@ export default function Register() {
             <input
               type="email"
               id="email"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-gray-800"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -55,7 +78,7 @@ export default function Register() {
             <input
               type="password"
               id="password"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-gray-800"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -66,7 +89,7 @@ export default function Register() {
             <input
               type="password"
               id="confirmPassword"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 text-gray-800"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
