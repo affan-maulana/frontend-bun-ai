@@ -1,28 +1,61 @@
 'use client';
 
-import { use, useState } from "react";
+import { useState } from "react";
 import { Menu, MenuItem, MenuButton } from "@/components/ui/Menu";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChevronDown } from "lucide-react";
+import axios from "axios";
+import { Message } from "@/types/chat";
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! How can I help you today?", sender: "bot" },
-    { id: 2, text: "wkwkw", sender: "user" },
-  ]);
+  
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
-    setMessages([...messages, { id: messages.length + 1, text: input, sender: "user" }]);
     setInput("");
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { content: input, role: "user" },
+    ]);
+
+    // Kirim pesan ke server
+    try{
+      const response = await axios.post(
+        `${baseUrl}/chat/ee80ffaf-f15b-4a86-bc10-bba845f3a091`, 
+        { 
+          history: messages,
+          message: input 
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiaWQiOiIzOGE4ZWRkYS0wYjczLTRhNmItOWZkYS0zMWNhMzZiNWI4ZWMiLCJlbWFpbCI6ImFmZmFuLm0xOTkzQGdtYWlsLmNvbSJ9LCJyb2xlIjoiY2xpZW50IiwiZXhwIjoxNzM5ODI4ODcyfQ.CbnFn_Snqb3bvw484KGENbESfYdalMyptgpK2fWVmL0`,
+          },
+        },
+      );
+
+      if (response.data?.success) {
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { content: response.data.data, role: "assistant" },
+        ]);
+      } else {
+        console.error("Response tidak sukses:", response.data);
+      }
+    } catch (error) {
+      console.error("Error saat mengirim pesan:", error);
+    }
   };
 
   return (
     <div className="flex h-screen text-white">
       {/* Sidebar */}
-      <aside className="w-1/4" style={{ backgroundColor: "#171717" }}>
+      <aside className="w-1/5" style={{ backgroundColor: "#171717" }}>
         <h1 className="text-xl font-semibold my-2 p-4">Sessions</h1>
         <ul className="space-y-2 p-4">
           <li className="p-2 cursor-pointer hover:bg-gray-700 rounded">Session 1</li>
@@ -48,10 +81,10 @@ export default function ChatPage() {
         {/* Chat Messages */}
         <div className="flex-1 p-4 overflow-y-auto flex flex-col items-center">
           <div className="w-full max-w-3xl mx-auto px-4 sm:px-6">
-            {messages.map((msg) => (
-              <div key={msg.id} className={`my-2 ${msg.sender === "user" ? "text-right" : "text-left"}`}>
-                <div className={`inline-block p-3 rounded-lg ${msg.sender === "user" ? "bg-gray-500 text-white" : "bg-gray-700 text-gray-200"}`}>
-                  {msg.text}
+            {messages.map((msg, index) => (
+              <div key={index} className={`my-2 ${msg.role === "user" ? "text-right" : "text-left"}`}>
+                <div className={`inline-block p-3 rounded-lg ${msg.role === "user" ? "bg-gray-500 text-white" : "bg-gray-700 text-gray-200"}`}>
+                  {msg.content}
                 </div>
               </div>
             ))}
@@ -66,8 +99,14 @@ export default function ChatPage() {
             placeholder="Type a message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault(); // Mencegah line break di input
+                sendMessage();
+              }
+            }}
           />
-          <Button className="ml-2 bg-gray-700 hover:bg-gray-500">Send</Button>
+          <Button onClick={sendMessage} className="ml-2 bg-gray-700 hover:bg-gray-500">Send</Button>
         </div>
       </main>
     </div>
