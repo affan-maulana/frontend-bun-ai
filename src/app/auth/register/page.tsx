@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import DOMPurify from 'dompurify';
 import axiosInstance from '@/utils/axios';
 import { apiErrorHandler } from '@/utils/apiHandlers';
@@ -19,7 +19,7 @@ export default function Register() {
   };
 
   // Handle register Logic
-  const handleRegister = async (e: any) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
 
     // Sanitize inputs
@@ -254,7 +254,7 @@ export default function Register() {
             Verify
           </button>
           <p className="mt-4 text-center text-sm text-gray-600">
-            Didn't receive an email?{' '}
+            {`Didn't receive an email? `}
             <button
               type="button"
               onClick={handleResend}

@@ -1,3 +1,4 @@
+
 export function apiErrorHandler(error: any) {
   console.error(error);
   const errorStatuses = [400, 404];
