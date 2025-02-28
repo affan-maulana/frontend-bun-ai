@@ -1,6 +1,6 @@
 export function Button({ children, onClick, className = "", variant = "default", ...props }: Readonly<{
   children: React.ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   variant?: "default" | "ghost";
 }>
@@ -10,14 +10,14 @@ export function Button({ children, onClick, className = "", variant = "default",
     ghost: "bg-transparent hover:bg-gray-700 text-white",
   };
   
-  // const handleClick = () => {
-  //   onClick();
-  // }
+  const handleClick = () => {
+    if (onClick) onClick();
+  }
 
   return (
     <button
       className={`px-4 py-2 rounded-md transition ${variants[variant]} ${className}`}
-      {...props}
+      {...props} onClick={handleClick}
     >
       {children}
     </button>

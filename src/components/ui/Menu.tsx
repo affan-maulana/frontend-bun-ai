@@ -29,12 +29,11 @@ export function Menu({ children } : Readonly<{ children: React.ReactNode[] }>) {
   );
 }
 
-export function MenuItem({ children, onClick }  : Readonly<{ children: React.ReactNode; onClick: () => void }>) {
+export function MenuItem({danger = false, children, onClick }  : Readonly<{ children: React.ReactNode; onClick: () => void, danger?: boolean }>) {
   return (
     <button
       onClick={onClick}
-      className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >
+      className={`${danger ? 'text-red-400' : 'text-gray-300'} block w-full text-left px-4 py-2 text-sm hover:bg-gray-700 hover:text-white`}>
       {children}
     </button>
   );
