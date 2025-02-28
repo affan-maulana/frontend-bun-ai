@@ -22,13 +22,11 @@ const ChatLayout = ({
 
   if (loading) {
     return (
-      <body>
-        <Loading />
-      </body>
+      <Loading />
     );
   }
 
-  return <body>{children}</body>;
+  return children;
 };
 
 export default ChatLayout;
