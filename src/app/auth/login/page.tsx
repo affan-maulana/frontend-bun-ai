@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '@/utils/axios';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,25 +9,28 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
 
     // Check for email format
     if (!email.includes('@') && !email.includes('.')) {
       alert('Email must be in the correct format');
     }
 
-    // axios post request to login
-    const url = process.env.NEXT_PUBLIC_API_URL;
-    axios.post(`${url}/auth/login`, {
-      email,
-      password,
-    }).then((res) => {
-      console.log(res.data);
-    }).catch((err) => {
-      console.error(err);
-    });
+    try {
+      const response = await axiosInstance.post('/auth/login', {
+        email,
+        password
+      });
+      console.log(response.data);
+
+      // save token to local storage
+      localStorage.setItem('token', response.data.data.token);
+
+      // redirect to chat page
+      window.location.href = '/chat';
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

@@ -10,14 +10,14 @@ export function Button({ children, onClick, className = "", variant = "default",
     ghost: "bg-transparent hover:bg-gray-700 text-white",
   };
   
-  const handleClick = () => {
-    onClick();
-  }
+  // const handleClick = () => {
+  //   onClick();
+  // }
 
   return (
     <button
       className={`px-4 py-2 rounded-md transition ${variants[variant]} ${className}`}
-      {...props} onClick={handleClick}
+      {...props}
     >
       {children}
     </button>

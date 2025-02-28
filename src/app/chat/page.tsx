@@ -5,8 +5,8 @@ import { Menu, MenuItem, MenuButton } from "@/components/ui/Menu";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChevronDown } from "lucide-react";
-import axios from "axios";
 import { Message } from "@/types/chat";
+import axiosInstance from '@/utils/axios';
 
 export default function ChatPage() {
   
@@ -24,19 +24,12 @@ export default function ChatPage() {
 
     // Kirim pesan ke server
     try{
-      const response = await axios.post(
-        `${baseUrl}/chat/ee80ffaf-f15b-4a86-bc10-bba845f3a091`, 
-        { 
-          history: messages,
-          message: input 
-        },
+      const response = await axiosInstance.post(
+        `/chat/ee80ffaf-f15b-4a86-bc10-bba845f3a091`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsiaWQiOiIzOGE4ZWRkYS0wYjczLTRhNmItOWZkYS0zMWNhMzZiNWI4ZWMiLCJlbWFpbCI6ImFmZmFuLm0xOTkzQGdtYWlsLmNvbSJ9LCJyb2xlIjoiY2xpZW50IiwiZXhwIjoxNzM5ODI4ODcyfQ.CbnFn_Snqb3bvw484KGENbESfYdalMyptgpK2fWVmL0`,
-          },
-        },
+          history: messages,
+          message: input,
+        }
       );
 
       if (response.data?.success) {
@@ -50,6 +43,11 @@ export default function ChatPage() {
     } catch (error) {
       console.error("Error saat mengirim pesan:", error);
     }
+  };
+
+  const handleLogout = async () => {
+    localStorage.clear();
+    window.location.href = '/auth/login';
   };
 
   return (
@@ -73,8 +71,7 @@ export default function ChatPage() {
               <Avatar size="sm" className="bg-gray-600" />
               <ChevronDown size={16} />
             </MenuButton>
-            <MenuItem onClick={() => { /* handle profile click */ }}>Profile</MenuItem>
-            <MenuItem  onClick={() => { /* handle profile click */ }}>Logout</MenuItem>
+            <MenuItem onClick={() =>  handleLogout()}>Logout</MenuItem>
           </Menu>
         </header>
 
