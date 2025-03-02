@@ -99,6 +99,19 @@ export default function ChatPage() {
     }
   };
 
+  // const handleDeleteImage = async (imageId: string) => {
+  //   try {
+  //     await axiosInstance.delete(`/ai/image/${imageId}`);
+  //     setImages(images.filter((image) => image.id !== imageId));
+
+  //     if (imageId == selectedImageId) {
+  //       // setSelectedImageId('')
+  //     }
+  //   } catch (error) {
+  //     alert(apiErrorHandler(error));
+  //   }
+  // };
+
   useEffect(() => {
     getImages();
   }, []);
