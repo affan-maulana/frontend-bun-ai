@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import axiosInstance from '@/utils/axios';
+import { apiErrorHandler } from '@/utils/apiHandlers';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -29,7 +30,8 @@ const LoginPage = () => {
       window.location.href = '/chat';
       
     } catch (error) {
-      console.error(error);
+      alert(apiErrorHandler(error));
+      return;
     }
   };
 

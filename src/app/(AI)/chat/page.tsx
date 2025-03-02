@@ -15,10 +15,28 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [newSessionName, setNewSessionName] = useState<string>("");
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    null
+  );
   const [sessionMessages, setSessionMessages] = useState<Chat[]>([]);
 
   const sendMessage = async () => {
+    // if selectedSessionId is null, create new session
+    let sessionId: string;
+    if (selectedSessionId === null) {
+      try {
+        const response = await axiosInstance.post(`/session`);
+        setSelectedSessionId(response.data.data.id);
+        setSessions([...sessions, response.data.data]);
+        sessionId = response?.data?.data?.id || "";
+      } catch (error) {
+        alert(apiErrorHandler(error));
+        return;
+      }
+    } else {
+      sessionId = selectedSessionId;
+    }
+
     if (!input.trim()) return;
     setInput("");
     setChatHistory((prevMessages) => [
@@ -28,17 +46,15 @@ export default function ChatPage() {
 
     setSessionMessages((prevMessages) => [
       ...prevMessages,
-      { message: input, isQuestion: true, sessionId: selectedSessionId ?? "" },
+      { message: input, isQuestion: true, sessionId: sessionId },
     ]);
 
     // Kirim pesan ke server
     try {
-      const response = await axiosInstance.post(`/ai/chat/${selectedSessionId}`,
-        {
-          history: chatHistory,
-          message: input,
-        }
-      );
+      const response = await axiosInstance.post(`/ai/chat/${sessionId}`, {
+        history: chatHistory,
+        message: input,
+      });
 
       if (response.data?.success) {
         setChatHistory((prevMessages) => [
@@ -48,7 +64,11 @@ export default function ChatPage() {
 
         setSessionMessages((prevMessages) => [
           ...prevMessages,
-          { message: response.data.data, isQuestion: false, sessionId: selectedSessionId ?? "" }
+          {
+            message: response.data.data,
+            isQuestion: false,
+            sessionId: sessionId ?? "",
+          },
         ]);
       } else {
         console.error("Response tidak sukses:", response.data);
@@ -76,7 +96,6 @@ export default function ChatPage() {
         }));
 
         setChatHistory(chatHistory);
-
       } else {
         console.error("Response tidak sukses:", response.data);
       }
@@ -125,8 +144,8 @@ export default function ChatPage() {
       setSessions(sessions.filter((session) => session.id !== sessionId));
 
       if (sessionId == selectedSessionId) {
-        setChatHistory([])
-        setSessionMessages([])
+        setChatHistory([]);
+        setSessionMessages([]);
         // setSelectedSessionId('')
       }
     } catch (error) {
@@ -156,68 +175,83 @@ export default function ChatPage() {
   return (
     <div className="flex h-screen text-white">
       {/* Sidebar */}
-      <aside className="w-1/5" style={{ backgroundColor: "#171717" }}>
-        <h1 className="text-xl font-semibold my-2 p-4">Sessions</h1>
-        <ul className="space-y-2 mx-2">
-          <li key="new" className="flex justify-end">
-            <Button
-              onClick={() => handleNewSession()}
-              className="m-1 bg-gray-700 hover:bg-gray-500"
-            >
-              +
-            </Button>
-          </li>
-          {[...sessions].reverse().map((session, index) => (
-            <li
-            key={index}
-            className={`p-2 flex justify-between items-center hover:bg-gray-700 rounded ${selectedSessionId === session.id ? 'bg-gray-700' : ''}`}
-            onClick={() => handleGetChat(session.id)}
+      <aside
+        className="w-1/5 flex flex-col justify-between"
+        style={{ backgroundColor: "#171717" }}
+      >
+        <div>
+          <h1 className="text-xl font-semibold my-2 p-4">Sessions</h1>
+          <ul className="space-y-2 mx-2">
+            <li key="new" className="flex justify-end">
+              <Button
+                onClick={() => handleNewSession()}
+                className="m-1 bg-gray-700 hover:bg-gray-500"
+              >
+                +
+              </Button>
+            </li>
+            {[...sessions].reverse().map((session, index) => (
+              <li
+                key={index}
+                className={`p-2 flex justify-between items-center hover:bg-gray-700 rounded ${
+                  selectedSessionId === session.id ? "bg-gray-700" : ""
+                }`}
+                onClick={() => handleGetChat(session.id)}
+              >
+                {editingSessionId === session.id ? (
+                  <input
+                    type="text"
+                    value={newSessionName}
+                    onChange={(e) => setNewSessionName(e.target.value)}
+                    onBlur={() => handleRenameSession(session.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleRenameSession(session.id);
+                      }
+                    }}
+                    className="bg-gray-700 text-white p-2 rounded"
+                  />
+                ) : (
+                  <span
+                    onDoubleClick={() => {
+                      setEditingSessionId(session.id);
+                      setNewSessionName(session.name ?? "New Session");
+                    }}
+                  >
+                    {session.name ?? "New Session"}
+                  </span>
+                )}
+                <Menu>
+                  <MenuButton as={Button} className="flex items-center gap-2">
+                    <MoreHorizontal size={16} />
+                  </MenuButton>
+                  <MenuItem
+                    onClick={() => {
+                      setEditingSessionId(session.id);
+                      setNewSessionName(session.name ?? "New Session");
+                    }}
+                  >
+                    Rename
+                  </MenuItem>
+                  <MenuItem
+                    danger={true}
+                    onClick={() => handleDeleteSession(session.id)}
+                  >
+                    Delete
+                  </MenuItem>
+                </Menu>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="flex justify-center p-4">
+          <Button
+            className="m-1 w-full bg-gray-700 hover:bg-gray-500"
+            onClick={() => (window.location.href = "/image")}
           >
-            {editingSessionId === session.id ? (
-              <input
-                type="text"
-                value={newSessionName}
-                onChange={(e) => setNewSessionName(e.target.value)}
-                onBlur={() => handleRenameSession(session.id)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleRenameSession(session.id);
-                  }
-                }}
-                className="bg-gray-700 text-white p-2 rounded"
-              />
-            ) : (
-              <span
-                onDoubleClick={() => {
-                  setEditingSessionId(session.id);
-                  setNewSessionName(session.name ?? "New Session");
-                }}
-              >
-                {session.name ?? "New Session"}
-              </span>
-            )}
-            <Menu>
-              <MenuButton as={Button} className="flex items-center gap-2">
-                <MoreHorizontal size={16} />
-              </MenuButton>
-              <MenuItem
-                onClick={() => {
-                  setEditingSessionId(session.id);
-                  setNewSessionName(session.name ?? "New Session");
-                }}
-              >
-                Rename
-              </MenuItem>
-              <MenuItem
-                danger={true}
-                onClick={() => handleDeleteSession(session.id)}
-              >
-                Delete
-              </MenuItem>
-            </Menu>
-          </li>
-          ))}
-        </ul>
+            Image Generative
+          </Button>
+        </div>
       </aside>
 
       {/* Chat Area */}

@@ -19,3 +19,11 @@ export interface Session {
   updatedAt: string;
   userId: string;
 }
+
+export interface Image {
+  id: string;
+  name: string;
+  url: string;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+}
