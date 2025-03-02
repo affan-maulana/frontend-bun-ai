@@ -5,12 +5,14 @@ import { Menu, MenuItem, MenuButton } from "@/components/ui/Menu";
 import { Button } from "@/components/ui/Button";
 import { Avatar } from "@/components/ui/Avatar";
 import { ChevronDown, MoreHorizontal } from "lucide-react";
-import { Image } from "@/types/chat";
+import { Image as ChatImage } from "@/types/chat";
 import axiosInstance from "@/utils/axios";
 import { apiErrorHandler } from "@/utils/apiHandlers";
 import { Spinner } from "@/components/assets/spinner";
+import Image from "next/image";
+
 export default function ChatPage() {
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<ChatImage[]>([]);
   const [input, setInput] = useState("");
   const [editingImageId, setEditingImageId] = useState<string | null>(null);
   const [newImageName, setNewImageName] = useState<string>("");
@@ -92,19 +94,6 @@ export default function ChatPage() {
       );
       setEditingImageId(null);
       setNewImageName("");
-    } catch (error) {
-      alert(apiErrorHandler(error));
-    }
-  };
-
-  const handleDeleteImage = async (imageId: string) => {
-    try {
-      await axiosInstance.delete(`/ai/image/${imageId}`);
-      setImages(images.filter((image) => image.id !== imageId));
-
-      if (imageId == selectedImageId) {
-        // setSelectedImageId('')
-      }
     } catch (error) {
       alert(apiErrorHandler(error));
     }
@@ -213,10 +202,17 @@ export default function ChatPage() {
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6">
               {selectedImageUrl && (
                 <div className="bg-gray-800 rounded-lg p-4 w-full">
-                  <img
+                  {/* <img
                     src={selectedImageUrl}
                     alt="Generated Image"
                     className="rounded-lg mx-auto"
+                  /> */}
+                  <Image
+                    src={selectedImageUrl}
+                    alt="Generated Image"
+                    className="rounded-lg"
+                    width={500} // specify the width
+                    height={500} // specify the height
                   />
               </div>
               )}
