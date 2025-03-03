@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['oaidalleapiprodscus.blob.core.windows.net'],
+  },
+  /* other config options here */
 };
 
 export default nextConfig;

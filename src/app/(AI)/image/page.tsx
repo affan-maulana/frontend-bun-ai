@@ -49,6 +49,10 @@ export default function ChatPage() {
     window.location.href = "/auth/login";
   };
 
+  const imgLoader = ({ src }: { src: string }) => {
+    return src;
+  };
+
   const handleGetImage = async (imageId: string, url: string) => {
     if (imageId === selectedImageId) {
       return
@@ -214,20 +218,17 @@ export default function ChatPage() {
           <div className="flex-1 p-4 overflow-y-auto flex flex-col items-center">
             <div className="w-full max-w-3xl mx-auto px-4 sm:px-6">
               {selectedImageUrl && (
-                <div className="bg-gray-800 rounded-lg p-4 w-full">
-                  {/* <img
-                    src={selectedImageUrl}
-                    alt="Generated Image"
-                    className="rounded-lg mx-auto"
-                  /> */}
+                <div className="bg-gray-800 rounded-lg p-4 w-full flex justify-center">
                   <Image
+                    loader={imgLoader}
                     src={selectedImageUrl}
                     alt="Generated Image"
                     className="rounded-lg"
                     width={500} // specify the width
                     height={500} // specify the height
+                    unoptimized
                   />
-              </div>
+                </div>
               )}
             </div>
           </div>
