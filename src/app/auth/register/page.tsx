@@ -3,6 +3,7 @@ import { FormEvent, useState } from 'react';
 import DOMPurify from 'dompurify';
 import axiosInstance from '@/utils/axios';
 import { apiErrorHandler } from '@/utils/apiHandlers';
+import { toast } from 'react-toastify';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -29,13 +30,13 @@ export default function Register() {
 
     // checker for password and confirm password
     if (sanitizedPassword !== confirmPassword) {
-      alert('Password and Confirm Password must be the same');
+      toast.error('Password and Confirm Password must be the same');
       return;
     }
 
     // check for email format
     if (!sanitizedEmail.includes('@') && !sanitizedEmail.includes('.')) {
-      alert('Email must be in the correct format');
+      toast.error('Email must be in the correct format');
       return;
     }
 
@@ -49,7 +50,7 @@ export default function Register() {
 
       if (register.status !== 200) {
         const message = register.data?.data?.message || 'Something went wrong';
-        alert(message);
+        toast.error(message);
         return;
       }
 
@@ -58,7 +59,7 @@ export default function Register() {
         email: sanitizedEmail,
       });
     } catch (error: any) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
       return;
     }
 
@@ -71,7 +72,7 @@ export default function Register() {
         email: sanitizeInput(email),
       });
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
       return;
     }
   };
@@ -79,17 +80,15 @@ export default function Register() {
   const handleVerify = async (updatedToken: string) => {
     try {
       const intToken = parseInt(updatedToken);
-      console.log('intToken', intToken);
 
       if (isNaN(intToken) || updatedToken.length !== 6) {
-        alert('Token must be a 6 digit number');
+        toast.error('Token must be a 6 digit number');
         return;
       }
       const response = await axiosInstance.post('/auth/verify', {
         email: sanitizeInput(email),
         tokenVerif: intToken,
       });
-      console.log(response.data);
 
       // save token to local storage
       localStorage.setItem('token', response.data.data.token);
@@ -97,7 +96,7 @@ export default function Register() {
       // redirect to chat page
       window.location.href = '/chat';
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
       return;
     }
   };

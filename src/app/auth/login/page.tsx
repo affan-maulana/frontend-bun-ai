@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import axiosInstance from '@/utils/axios';
 import { apiErrorHandler } from '@/utils/apiHandlers';
+import { toast } from 'react-toastify';
+import axiosInstance from '@/utils/axios';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ const LoginPage = () => {
 
     // Check for email format
     if (!email.includes('@') && !email.includes('.')) {
-      alert('Email must be in the correct format');
+      toast.error('Email must be in the correct format');
     }
 
     try {
@@ -21,7 +22,6 @@ const LoginPage = () => {
         email,
         password
       });
-      console.log(response.data);
 
       // save token to local storage
       localStorage.setItem('token', response.data.data.token);
@@ -29,8 +29,8 @@ const LoginPage = () => {
       // redirect to chat page
       window.location.href = '/chat';
       
-    } catch (error) {
-      alert(apiErrorHandler(error));
+    } catch (error: unknown) {
+      apiErrorHandler(error);
       return;
     }
   };

@@ -10,6 +10,7 @@ import axiosInstance from "@/utils/axios";
 import { apiErrorHandler } from "@/utils/apiHandlers";
 import { Spinner } from "@/components/assets/spinner";
 import Image from "next/image";
+import { toast } from "react-toastify";
 
 export default function ChatPage() {
   const [images, setImages] = useState<ChatImage[]>([]);
@@ -36,11 +37,11 @@ export default function ChatPage() {
         setSelectedImageUrl(response.data.data.url);
         setImages((prevImages) => [response.data.data, ...prevImages]);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Failed to generate image");
       }
     } catch (error) {
       setLoading(false);
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
@@ -64,10 +65,10 @@ export default function ChatPage() {
         setSelectedImageId(imageId);
         setSelectedImageUrl(url);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Failed to get image");
       }
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
@@ -78,10 +79,10 @@ export default function ChatPage() {
       if (response.data?.success) {
         setImages(response.data.data);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Failed to get images");
       }
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
       return;
     }
   };
@@ -99,7 +100,7 @@ export default function ChatPage() {
       setEditingImageId(null);
       setNewImageName("");
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
@@ -112,7 +113,7 @@ export default function ChatPage() {
   //       // setSelectedImageId('')
   //     }
   //   } catch (error) {
-  //     alert(apiErrorHandler(error));
+  //     apiErrorHandler(error);
   //   }
   // };
 

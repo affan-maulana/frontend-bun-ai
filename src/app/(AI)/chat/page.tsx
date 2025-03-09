@@ -8,6 +8,7 @@ import { ChevronDown, MoreHorizontal } from "lucide-react";
 import { Message, Session, Chat } from "@/types/chat";
 import axiosInstance from "@/utils/axios";
 import { apiErrorHandler } from "@/utils/apiHandlers";
+import { toast } from "react-toastify";
 
 export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
@@ -30,7 +31,7 @@ export default function ChatPage() {
         setSessions([...sessions, response.data.data]);
         sessionId = response?.data?.data?.id || "";
       } catch (error) {
-        alert(apiErrorHandler(error));
+        apiErrorHandler(error);
         return;
       }
     } else {
@@ -71,10 +72,10 @@ export default function ChatPage() {
           },
         ]);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Oops! Something went wrong");
       }
     } catch (error) {
-      console.error("Error saat mengirim pesan:", error);
+      apiErrorHandler(error);
     }
   };
 
@@ -97,10 +98,10 @@ export default function ChatPage() {
 
         setChatHistory(chatHistory);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Oops! Something went wrong");
       }
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
@@ -111,10 +112,10 @@ export default function ChatPage() {
       if (response.data?.success) {
         setSessions(response.data.data);
       } else {
-        console.error("Response tidak sukses:", response.data);
+        toast.error("Oops! Something went wrong");
       }
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
       return;
     }
   };
@@ -134,7 +135,7 @@ export default function ChatPage() {
       setEditingSessionId(null);
       setNewSessionName("");
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
@@ -149,22 +150,20 @@ export default function ChatPage() {
         // setSelectedSessionId('')
       }
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
   const handleNewSession = async () => {
-    console.log("new session");
 
     try {
       const response = await axiosInstance.post(`/session`);
-      console.log("response", response);
       setChatHistory([]);
       setSessionMessages([]);
       setSelectedSessionId(response.data.data.id);
       setSessions([...sessions, response.data.data]);
     } catch (error) {
-      alert(apiErrorHandler(error));
+      apiErrorHandler(error);
     }
   };
 
