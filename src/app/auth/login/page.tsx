@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { apiErrorHandler } from '@/utils/apiHandlers';
 import { toast } from 'react-toastify';
 import axiosInstance from '@/utils/axios';
+import Image from 'next/image';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -37,7 +38,8 @@ const LoginPage = () => {
 
   return (
     <div className="bg-slate-200 p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-gray-700 text-2xl font-bold mb-6 text-center">Bun AI Chat Login</h2>
+      {/* <h2 className="text-gray-700 text-2xl font-bold mb-6 text-center">Login</h2> */}
+      <Image src="/bunchat-logo.png" alt="Bun AI" width={200} height={200} className="mx-auto" />
       <form onSubmit={handleLogin}>
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>

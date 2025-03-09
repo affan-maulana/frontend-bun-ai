@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify';
 import axiosInstance from '@/utils/axios';
 import { apiErrorHandler } from '@/utils/apiHandlers';
 import { toast } from 'react-toastify';
+import Image from 'next/image';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -104,7 +105,9 @@ export default function Register() {
   if (!verifyPage) {
     return (
       <div className="bg-slate-200 p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-gray-700 text-2xl font-bold mb-6 text-center">Bun AI Chat Register</h2>
+        {/* <h2 className="text-gray-700 text-2xl font-bold mb-6 text-center">Bun AI Chat Register</h2> */}
+        <Image src="/bunchat-logo.png" alt="Bun AI" width={200} height={200} className="mx-auto" />
+        
         <form onSubmit={handleRegister}>
           <div className="mb-4">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
