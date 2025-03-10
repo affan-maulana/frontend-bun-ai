@@ -9,6 +9,7 @@ import { Message, Session, Chat } from "@/types/chat";
 import axiosInstance from "@/utils/axios";
 import { apiErrorHandler } from "@/utils/apiHandlers";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
@@ -155,7 +156,6 @@ export default function ChatPage() {
   };
 
   const handleNewSession = async () => {
-
     try {
       const response = await axiosInstance.post(`/session`);
       setChatHistory([]);
@@ -179,9 +179,9 @@ export default function ChatPage() {
         style={{ backgroundColor: "#171717" }}
       >
         <div>
-          <h1 className="text-xl font-semibold my-2 p-4">Sessions</h1>
           <ul className="space-y-2 mx-2">
-            <li key="new" className="flex justify-end">
+            <li key="new" className="flex justify-between items-center">
+              <h1 className="text-xl font-semibold my-2 p-4">Sessions</h1>
               <Button
                 onClick={() => handleNewSession()}
                 className="m-1 bg-gray-700 hover:bg-gray-500"
@@ -243,7 +243,33 @@ export default function ChatPage() {
             ))}
           </ul>
         </div>
-        <div className="flex justify-center p-4">
+        <div className="p-4">
+          <a href="mailto:affan.m1993@gmail.com" className="block">
+            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
+              affan.m1993@gmail.com
+              <Image src="/email.png" alt="email" width={29} height={16} />
+            </div>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/affan-maulana/"
+            className="block"
+            target="_blank"
+          >
+            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
+              LinkedIn
+              <Image src="/linkedin.png" alt="email" width={29} height={16} />
+            </div>
+          </a>
+          <a
+            href="https://github.com/affan-maulana"
+            className="block"
+            target="_blank"
+          >
+            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
+              GitHub
+              <Image src="/github.png" alt="email" width={29} height={16} />
+            </div>
+          </a>
           <Button
             className="m-1 w-full bg-gray-700 hover:bg-gray-500"
             onClick={() => (window.location.href = "/image")}
