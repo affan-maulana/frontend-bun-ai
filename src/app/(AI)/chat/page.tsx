@@ -41,7 +41,7 @@ export default function ChatPage() {
     if (!input.trim()) return;
     setInput("");
     setChatHistory((prevMessages) => [
-      ...prevMessages,
+      ...prevMessages.slice(-2),
       { content: input, role: "user" },
     ]);
 
@@ -58,10 +58,10 @@ export default function ChatPage() {
       });
 
       if (response.data?.success) {
-        setChatHistory((prevMessages) => [
-          ...prevMessages,
-          { content: response.data.data, role: "assistant" },
-        ]);
+        // setChatHistory((prevMessages) => [
+        //   ...prevMessages.slice(-2),
+        //   { content: response.data.data, role: "assistant" },
+        // ]);
 
         setSessionMessages((prevMessages) => [
           ...prevMessages,
