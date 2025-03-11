@@ -244,32 +244,6 @@ export default function ChatPage() {
           </ul>
         </div>
         <div className="p-4">
-          <a href="mailto:affan.m1993@gmail.com" className="block">
-            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
-              affan.m1993@gmail.com
-              <Image src="/email.png" alt="email" width={29} height={16} />
-            </div>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/affan-maulana/"
-            className="block"
-            target="_blank"
-          >
-            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
-              LinkedIn
-              <Image src="/linkedin.png" alt="email" width={29} height={16} />
-            </div>
-          </a>
-          <a
-            href="https://github.com/affan-maulana"
-            className="block"
-            target="_blank"
-          >
-            <div className="mb-2 bg-yellow-700 hover:bg-yellow-600 p-2 rounded-lg flex justify-between">
-              GitHub
-              <Image src="/github.png" alt="email" width={29} height={16} />
-            </div>
-          </a>
           <Button
             className="m-1 w-full bg-gray-700 hover:bg-gray-500"
             onClick={() => (window.location.href = "/image")}
