@@ -9,7 +9,6 @@ import { Message, Session, Chat } from "@/types/chat";
 import axiosInstance from "@/utils/axios";
 import { apiErrorHandler } from "@/utils/apiHandlers";
 import { toast } from "react-toastify";
-import Image from "next/image";
 
 export default function ChatPage() {
   const [chatHistory, setChatHistory] = useState<Message[]>([]);
